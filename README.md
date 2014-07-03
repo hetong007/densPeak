@@ -26,7 +26,7 @@ table(result$cluster,iris[,5])
 ```
 ##    
 ##     setosa versicolor virginica
-##   1     50          0         0
-##   2      0         41         2
-##   3      0          9        48
+##   1     50         37        36
+##   2      0         13         1
+##   3      0          0        13
 ```
