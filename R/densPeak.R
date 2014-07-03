@@ -61,13 +61,31 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
     cluster_list = centers
     index = order(rho,decreasing=TRUE)
     
+    #browser()
+    
     for (i in index)
     {
         if (cluster[i]==0)
         {
-            neighbour = as.numeric(names(which.min(distMat[i,cluster_list])))
-            cluster_list = c(cluster_list,i)
-            cluster[i] = cluster[neighbour]
+            isStop = FALSE
+            unique_list = i
+            current = i
+            while (!isStop)
+            {
+                tmpMat = distMat[unique_list,-unique_list,drop=F]
+                neighbour = which(tmpMat == min(tmpMat), arr.ind = TRUE)
+                neighbour = as.numeric(colnames(tmpMat)[neighbour[2]])
+                if (cluster[neighbour]==0)
+                {
+                    current = neighbour
+                    unique_list = c(unique_list,current)
+                }
+                else
+                {
+                    cluster[unique_list] = cluster[neighbour]
+                    isStop = TRUE
+                }
+            }
         }
     }
 
