@@ -54,5 +54,39 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         plot(delta,rho,xlab='Delta',ylab='Rho')
     }
     
+    rank = (delta+rho)*pmin(delta,rho)
+    centers = order(rank,decreasing=TRUE)[1:centers]
     
+    subDistMat = distMat[,centers]
+    cluster = apply(subDistMat,1,which.min)
+    distance = apply(subDistMat,1,min)
+    
+    border = vector(5,mode = "list")
+    halo = rep(0,n)
+    k = length(centers)
+    for (i in 1:k)
+    {
+        index = which(cluster==i)
+        diff_index = setdiff(1:n,index)
+        tmpMat = distMat[index,diff_index]
+        border[[i]] = which(rowSums(tmpMat<dc)>0)
+        if (length(border[[i]])>0)
+        {
+            rho_h = max(rho[border[[i]]])
+            halo_ind = (rho<rho_h)[index]
+            if (length(halo_ind)>0)
+            {
+                halo[ind] = i
+                cluster[index] = 0
+            }
+        }
+    }
+
+    result = list(centers = centers,
+                  cluster = cluster,
+                  halo = halo,
+                  dc = dc,
+                  rho = rho,
+                  delta = delta)
+    result
 }
