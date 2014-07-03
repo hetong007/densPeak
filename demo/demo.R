@@ -1,5 +1,0 @@
-source('../R/densPeak.R')
-
-data(iris)
-result = densPeak(iris[,1:4], centers=3, dc=1,dc.range=c(0.02,0.1))
-table(result$cluster,iris[,5])
