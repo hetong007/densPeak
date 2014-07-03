@@ -9,6 +9,8 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         distMat = as.matrix(dist(X, method = method))
     }
     
+    n = ncol(distMat)
+    
     if (!is.null(dc.range))
     {
         if (dc.range[2]<dc.range[1])
@@ -18,7 +20,7 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         r = 1
         while(!inRange)
         {
-            meanRho = mean(rowSums(distMat<dc))
+            meanRho = mean(rowSums(distMat<dc))/n
             if (meanRho>dc.range[2])
             {
                 r = dc
@@ -39,20 +41,14 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
     
     rho = rowSums(distMat<dc)
     
-    n = ncol(dist)
     index = order(rho)
     delta = rep(0,n)
     for (i in 1:(n-1))
     {
         ind = index[i]
-        delta[ind] = min(dist[ind,index[(i+1):n]])
+        delta[ind] = min(distMat[ind,index[(i+1):n]])
     }
-    delta[index[n]] = max(dist[index[n],])
-    
-    if (plot)
-    {
-        plot(delta,rho,xlab='Delta',ylab='Rho')
-    }
+    delta[index[n]] = max(distMat[index[n],])
     
     rank = (delta+rho)*pmin(delta,rho)
     centers = order(rank,decreasing=TRUE)[1:centers]
@@ -73,15 +69,23 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         if (length(border[[i]])>0)
         {
             rho_h = max(rho[border[[i]]])
-            halo_ind = (rho<rho_h)[index]
+            halo_ind = which(rho<rho_h)[index]
             if (length(halo_ind)>0)
             {
-                halo[ind] = i
-                cluster[index] = 0
+                halo[halo_ind] = i
+                cluster[halo_ind] = 0
             }
         }
     }
 
+    if (plot)
+    {
+        color = rep(1,n)
+        color[centers] = 1+1:length(centers)
+        plot(delta,rho,xlab='Delta',ylab='Rho',pch=20,col=color)
+        plot(X[,1],X[,2],pch=20,col=cluster+1)
+    }
+    
     result = list(centers = centers,
                   cluster = cluster,
                   halo = halo,
