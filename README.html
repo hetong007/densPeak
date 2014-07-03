@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title></title>
+<title>densPeak</title>
 
 <!-- Styles for R syntax highlighter -->
 <style type="text/css">
@@ -190,7 +190,13 @@ hr {
 </head>
 
 <body>
-<pre><code class="r">source(&#39;../R/densPeak.R&#39;)
+<h1>densPeak</h1>
+
+<p>An R implementation of <a href="http://www.sciencemag.org/content/344/6191/1492.abstract">Clustering by fast search and find of density peak, by Alex Rodriguez, Alessandro Laio</a>.</p>
+
+<p>Here&#39;s a demo on <code>iris</code>.</p>
+
+<pre><code class="r">source(&#39;R/densPeak.R&#39;)
 data(iris)
 
 result = densPeak(iris[,1:4], centers=3, dc=1,dc.range=c(0.01,0.02))
