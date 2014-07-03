@@ -12,7 +12,7 @@ Download data from [http://cs.joensuu.fi/sipu/datasets/](http://cs.joensuu.fi/si
 
 
 ```r
-aggregation = read.table('http://cs.joensuu.fi/sipu/datasets/Aggregation.txt')
+aggregation = read.table('data/Aggregation.txt')
 result = densPeak(aggregation[,1:2], centers=7, dc=1,dc.range=c(0.01,0.02))
 ```
 
@@ -26,7 +26,7 @@ result = densPeak(aggregation[,1:2], centers=7, dc=1,dc.range=c(0.01,0.02))
 
 
 ```r
-flame = read.table('http://cs.joensuu.fi/sipu/datasets/flame.txt')
+flame = read.table('data/flame.txt')
 result = densPeak(flame[,1:2], centers=2, dc=1,dc.range=c(0.01,0.02))
 ```
 
@@ -40,8 +40,8 @@ result = densPeak(flame[,1:2], centers=2, dc=1,dc.range=c(0.01,0.02))
 
 
 ```r
-spiral = read.table('http://cs.joensuu.fi/sipu/datasets/spiral.txt')
-result = densPeak(spiral[,1:2], centers=2, dc=1,dc.range=c(0.01,0.02))
+spiral = read.table('data/spiral.txt')
+result = densPeak(spiral[,1:2], centers=3, dc=1,dc.range=c(0.01,0.02))
 ```
 
 ```

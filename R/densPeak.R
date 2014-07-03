@@ -56,28 +56,18 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
     rank = (delta+rho)*pmin(delta,rho)
     centers = order(rank,decreasing=TRUE)[1:centers]
     
-    subDistMat = distMat[,centers]
-    cluster = apply(subDistMat,1,which.min)
-    distance = apply(subDistMat,1,min)
+    cluster = rep(0,n)
+    cluster[centers] = 1:length(centers)
+    cluster_list = centers
+    index = order(rho,decreasing=TRUE)
     
-    border = vector(5,mode = "list")
-    halo = rep(0,n)
-    k = length(centers)
-    for (i in 1:k)
+    for (i in index)
     {
-        index = which(cluster==i)
-        diff_index = setdiff(1:n,index)
-        tmpMat = distMat[index,diff_index]
-        border[[i]] = which(rowSums(tmpMat<dc)>0)
-        if (length(border[[i]])>0)
+        if (cluster[i]==0)
         {
-            rho_h = max(rho[border[[i]]])
-            halo_ind = which(rho<rho_h)[index]
-            if (length(halo_ind)>0)
-            {
-                halo[halo_ind] = i
-                cluster[halo_ind] = 0
-            }
+            neighbour = as.numeric(names(which.min(distMat[i,cluster_list])))
+            cluster_list = c(cluster_list,i)
+            cluster[i] = cluster[neighbour]
         }
     }
 
@@ -93,7 +83,6 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
     
     result = list(centers = centers,
                   cluster = cluster,
-                  halo = halo,
                   dc = dc,
                   rho = rho,
                   delta = delta)
