@@ -82,7 +82,9 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
     {
         color = rep(1,n)
         color[centers] = 1+1:length(centers)
-        plot(delta,rho,xlab='Delta',ylab='Rho',pch=20,col=color)
+        sizes = rep(1,n)
+        sizes[centers] = 3
+        plot(delta,rho,xlab='Delta',ylab='Rho',pch=20,col=color,cex=sizes)
         plot(X[,1],X[,2],pch=20,col=cluster+1)
     }
     
