@@ -16,8 +16,9 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         if (dc.range[2]<dc.range[1])
             dc.range = dc.range[2:1]
         inRange = FALSE
+        counter = 1
         l = 0
-        r = 1
+        r = max(distMat)
         while(!inRange)
         {
             meanRho = mean(rowSums(distMat<dc))/n
@@ -35,6 +36,8 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
             {
                 inRange = TRUE
             }
+            if (counter>100)
+                inRange = TRUE
         }
         cat('dc is corrected to be',dc,'and the percentage is',meanRho,'.\n')
     }
