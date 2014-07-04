@@ -42,17 +42,22 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         cat('dc is corrected to be',dc,'and the percentage is',meanRho,'.\n')
     }
     
-    
     rho = rowSums(distMat<dc)
     
     index = order(rho)
     delta = rep(0,n)
+    near_neighbour = rep(0,n)
     for (i in 1:(n-1))
     {
         ind = index[i]
         delta[ind] = min(distMat[ind,index[(i+1):n]])
+        if (i+1==n)
+            near_neighbour[ind] = index[n]
+        else
+            near_neighbour[ind] = as.numeric(names(which.min(distMat[ind,index[(i+1):n]])))
     }
     delta[index[n]] = max(distMat[index[n],])
+    near_neighbour[index[n]] = index[n]
     
     rank = (delta+rho)*pmin(delta,rho)
     if (length(centers)==1)
@@ -67,32 +72,22 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
     cluster_list = centers
     index = order(rho,decreasing=TRUE)
     
-    #browser()
+    tree = cbind(near_neighbour,1:n)
     
-    for (i in index)
+    allHaveLabel = FALSE
+    i = 1
+    
+    while(!allHaveLabel)
     {
-        if (cluster[i]==0)
-        {
-            isStop = FALSE
-            unique_list = i
-            current = i
-            while (!isStop)
-            {
-                tmpMat = distMat[unique_list,-unique_list,drop=F]
-                neighbour = which(tmpMat == min(tmpMat), arr.ind = TRUE)
-                neighbour = as.numeric(colnames(tmpMat)[neighbour[2]])
-                if (cluster[neighbour]==0)
-                {
-                    current = neighbour
-                    unique_list = c(unique_list,current)
-                }
-                else
-                {
-                    cluster[unique_list] = cluster[neighbour]
-                    isStop = TRUE
-                }
-            }
-        }
+        father = cluster_list[i]
+        index = which(tree[,1]==father)
+        sons = tree[index,2]
+        sons = sons[which(cluster[sons]==0)]
+        cluster[sons] = cluster[father]
+        cluster_list = c(cluster_list,sons)
+        i = i+1
+        if (length(setdiff(1:n,cluster_list))==0)
+            allHaveLabel = TRUE
     }
     
     if (plot)
@@ -105,7 +100,12 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         if (ncol(X)>2)
             pairs(X,pch=20,col=cluster+1,cex=sizes)
         else
+        {
             plot(X[,1],X[,2],pch=20,col=cluster+1,cex=sizes)
+            plot(X[,1],X[,2],pch=20,col=cluster+1,cex=sizes,main='The path of labels')
+            for (i in 1:nrow(tree))
+                lines(X[tree[i,],1],X[tree[i,],2])
+        }
     }
     
     result = list(centers = centers,

@@ -3,7 +3,7 @@ densPeak
 
 An R implementation of [Clustering by fast search and find of density peak, by Alex Rodriguez, Alessandro Laio](http://www.sciencemag.org/content/344/6191/1492.abstract).
 
-This is an unfinished version. The label assignment is under construction.
+This is an unfinished version. The path of label assignment is under construction. View `demo` for more details.
 
 Here's a demo on `iris`.
 
