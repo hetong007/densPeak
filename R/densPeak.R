@@ -103,8 +103,9 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         {
             plot(X[,1],X[,2],pch=20,col=cluster+1,cex=sizes)
             plot(X[,1],X[,2],pch=20,col=cluster+1,cex=sizes,main='The path of labels')
-            for (i in 1:nrow(tree))
-                lines(X[tree[i,],1],X[tree[i,],2])
+            arrows(X[tree[,1],1],X[tree[,1],2],X[tree[,2],1],X[tree[,2],2],length=0.05)
+            #for (i in 1:nrow(tree))
+            #    lines(X[tree[i,],1],X[tree[i,],2])
         }
     }
     
