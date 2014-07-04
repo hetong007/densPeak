@@ -3,6 +3,8 @@ densPeak
 
 An R implementation of [Clustering by fast search and find of density peak, by Alex Rodriguez, Alessandro Laio](http://www.sciencemag.org/content/344/6191/1492.abstract).
 
+This is an unfinished version. The label assignment is under construction.
+
 Here's a demo on `iris`.
 
 ```{r}
@@ -10,5 +12,4 @@ source('R/densPeak.R')
 data(iris)
 
 result = densPeak(iris[,1:4], centers=3, dc=1,dc.range=c(0.01,0.02))
-table(result$cluster,iris[,5])
 ```

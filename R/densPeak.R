@@ -2,14 +2,14 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
 {
     if (is.null(distMat) && is.null(X))
         stop("Invalid Input")
-    if (dc<=0 || centers<=1)
-        stop("Invalid Input")
+
     if (is.null(distMat))
     {
         distMat = as.matrix(dist(X, method = method))
     }
-    
     n = ncol(distMat)
+    if (dc<=0 | min(centers)<=1 | length(centers)>n | max(centers)>n | any(duplicated(centers)))
+        stop("Invalid Input")
     
     if (!is.null(dc.range))
     {
@@ -42,6 +42,7 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         cat('dc is corrected to be',dc,'and the percentage is',meanRho,'.\n')
     }
     
+    
     rho = rowSums(distMat<dc)
     
     index = order(rho)
@@ -54,8 +55,13 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
     delta[index[n]] = max(distMat[index[n],])
     
     rank = (delta+rho)*pmin(delta,rho)
-    centers = order(rank,decreasing=TRUE)[1:centers]
-    
+    if (length(centers)==1)
+    {
+        if (centers>n)
+            stop("More centers than data points")
+        centers = order(rank,decreasing=TRUE)[1:centers]
+    }
+
     cluster = rep(0,n)
     cluster[centers] = 1:length(centers)
     cluster_list = centers
@@ -88,7 +94,7 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
             }
         }
     }
-
+    
     if (plot)
     {
         color = rep(1,n)
@@ -96,7 +102,10 @@ densPeak = function(X=NULL, distMat=NULL, centers, dc, method = "euclidean", dc.
         sizes = rep(1,n)
         sizes[centers] = 3
         plot(delta,rho,xlab='Delta',ylab='Rho',pch=20,col=color,cex=sizes)
-        plot(X[,1],X[,2],pch=20,col=cluster+1)
+        if (ncol(X)>2)
+            pairs(X,pch=20,col=cluster+1,cex=sizes)
+        else
+            plot(X[,1],X[,2],pch=20,col=cluster+1,cex=sizes)
     }
     
     result = list(centers = centers,
